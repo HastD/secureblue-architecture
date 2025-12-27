@@ -1,0 +1,53 @@
+# Copyright 2025 The Secureblue Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under the License is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+name: Release
+
+on:
+  push:
+    branches: ["live"]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  zizmor:
+    name: Release
+    runs-on: ubuntu-24.04
+    permissions:
+      security-events: write # write findings to github
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+
+      - name: Generate d2 diagram
+        shell: bash
+        run: |
+          go install oss.terrastruct.com/d2@latest
+          ~/go/bin/d2 architecture.d2 architecture.png
+
+      - name: Generate timestamp tag
+        id: timestamp
+        run: |
+          echo "tag_name=$(date +'%Y%m%d%H%M%S%3N')" >> "$GITHUB_OUTPUT"
+
+      - name: Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          files: architecture.png
+          tag_name: ${{ steps.timestamp.outputs.tag_name }}
