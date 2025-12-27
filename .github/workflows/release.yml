@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       security-events: write # write findings to github
+      contents: write # create a new release
     steps:
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
