@@ -51,4 +51,5 @@ jobs:
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           files: architecture.png
+          body: "![architecture.png](https://github.com/secureblue/architecture/releases/download/${{ steps.timestamp.outputs.tag_name}}/architecture.png)"
           tag_name: ${{ steps.timestamp.outputs.tag_name }}
