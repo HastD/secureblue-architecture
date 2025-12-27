@@ -1,0 +1,201 @@
+direction: right
+vars: {
+  d2-config: {
+    layout-engine: elk
+    # Terminal theme code
+    # theme-id: 300
+    # sketch: true
+  }
+  d2-legend: {
+    a -> b: HTTPS + Signature Verification + Provenance Verification {
+      style.stroke: blue
+      style.font-color: blue
+    }
+    a -> b: HTTPS + Signature Verification {
+      style.stroke: green
+      style.font-color: green
+    }
+    a -> b: HTTPS {
+      style.stroke: black
+    }
+    a.style.opacity: 0
+    b.style.opacity: 0
+  }
+}
+
+Secureblue Build: {
+  Secureblue GitHub-Hosted Runner: {
+    icon: https://icons.terrastruct.com/dev%2Fgithub.svg
+    StepSecurity Harden-Runner (Egress Auditor): {
+      icon: ./stepsecurity.jpeg
+      Build Job: {
+        Blue-Build CLI: {
+          icon: ./bluebuild.png
+        }
+      }
+
+      Provenance Job: {
+        SLSA generator: {
+          icon: ./slsa.png
+        }
+      }
+    }
+
+    StepSecurity Harden-Runner (Egress Auditor).Provenance Job.SLSA Generator -> StepSecurity Harden-Runner (Egress Auditor).Build Job: attestation generation {
+      style.stroke: black
+    }
+  }
+}
+
+Trivalent Build: {
+  Secureblue GitHub-Hosted Runner: {
+    icon: https://icons.terrastruct.com/dev%2Fgithub.svg
+    StepSecurity Harden-Runner (Egress Auditor): {
+      icon: ./stepsecurity.jpeg
+
+      SRPM Build Job
+
+      Signing Job
+
+      Provenance Job: {
+        SLSA Generator: {
+          icon: ./slsa.png
+        }
+      }
+    }
+
+    StepSecurity Harden-Runner (Egress Auditor).Provenance Job.SLSA generator -> StepSecurity Harden-Runner (Egress Auditor).Signing Job: attestation generation {
+      style.stroke: black
+    }
+    StepSecurity Harden-Runner (Egress Auditor).Provenance Job.SLSA generator -> StepSecurity Harden-Runner (Egress Auditor).SRPM Build Job: attestation generation {
+      style.stroke: black
+    }
+  }
+
+  Secureblue AWS-Hosted Runner via Runs-On: {
+    icon: ./runson.png
+    StepSecurity Harden-Runner (Egress Auditor): {
+      icon: ./stepsecurity.jpeg
+
+      RPM Build Job
+    }
+  }
+}
+
+Secureblue Copr Runners: {
+  icon: ./copr.png
+
+  Build for bubblejail
+
+  Build for hardened_malloc
+
+  Build for run0edit
+
+  Build for branding
+
+  Build for Trivalent source cache
+
+  Build for Trivalent subresource filter
+}
+
+Secureblue Copr Runners -> Fedora Copr: push build {
+  style.stroke: black
+}
+
+Secureblue Copr Runners -> Secureblue Github Repos: pull source {
+  style.stroke: black
+}
+
+GitHub Container Registry: {
+  icon: ./githubcontainerregistry.png
+}
+
+User Machine: {
+  shape: image
+  icon: ./securebluelaptop.png
+}
+
+Secureblue RPM Repo: {
+  shape: image
+  icon: ./secureblue.svg
+}
+
+Fedora Copr: {
+  shape: image
+  icon: ./copr.png
+}
+
+Negativo17
+
+Fedora Repos: {
+  shape: image
+  icon: ./fedora.png
+}
+
+Fedora Quay Registry: {
+  shape: image
+  icon: ./quay.png
+}
+
+Secureblue GitHub Repos: {
+  shape: image
+  icon: https://icons.terrastruct.com/dev%2Fgithub.svg
+}
+
+User Machine -> Github Container Registry: update pull {
+  style.stroke: blue
+  style.font-color: blue
+}
+
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Provenance Job.SLSA Generator -> GitHub Container Registry: attestation push {
+  style.stroke: black
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Build Job.Blue-Build CLI -> GitHub Container Registry: image and signature push {
+  style.stroke: black
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Build Job.Blue-Build CLI -> Fedora Repos: install packages {
+  style.stroke: green
+  style.font-color: green
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Build Job.Blue-Build CLI -> Negativo17: install packages {
+  style.stroke: green
+  style.font-color: green
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Build Job.Blue-Build CLI -> Fedora Copr: install packages {
+  style.stroke: green
+  style.font-color: green
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Build Job.Blue-Build CLI -> Fedora Quay Registry: pull base image {
+  style.stroke: green
+  style.font-color: green
+}
+Trivalent Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Provenance Job.SLSA Generator -> Trivalent Build.Secureblue AWS-Hosted Runner via Runs-On.StepSecurity Harden-Runner (Egress Auditor).RPM Build Job: attestation generation {
+  style.stroke: black
+}
+Trivalent Build.Secureblue AWS-Hosted Runner via Runs-On.StepSecurity Harden-Runner (Egress Auditor).RPM Build Job -> Trivalent Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).SRPM Build Job: pull srpm {
+  style.stroke: black
+}
+Trivalent Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Signing Job -> Trivalent Build.Secureblue AWS-Hosted Runner via Runs-On.StepSecurity Harden-Runner (Egress Auditor).RPM Build Job: pull rpm {
+  style.stroke: black
+}
+Trivalent Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Signing Job -> Secureblue RPM Repo: push signed rpm {
+  style.stroke: black
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Build Job.Blue-Build CLI -> Secureblue RPM Repo: install trivalent rpm {
+  style.stroke: blue
+  style.font-color: blue
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Build Job.Blue-Build CLI -> Secureblue Github Repos: pull trivalent attestation {
+  style.stroke: black
+}
+Trivalent Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).SRPM Build Job -> Fedora Copr: pull source cache {
+  style.stroke: green
+  style.font-color: green
+}
+Trivalent Build.Secureblue GitHub-Hosted Runner.StepSecurity Harden-Runner (Egress Auditor).Provenance Job.SLSA Generator -> Secureblue GitHub Repos: push attestation {
+  style.stroke: black
+}
+Secureblue Build.Secureblue GitHub-Hosted Runner -> GitHub Container Registry: install blue-build cli {
+  style.stroke: blue
+  style.font-color: blue
+}
